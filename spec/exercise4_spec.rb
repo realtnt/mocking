@@ -24,14 +24,15 @@ RSpec.describe TimeError do
           "week_number": 18
         }'
       )
+    
+    server_time_fake = DateTime.parse("2022-05-06T12:28:17.903776+00:00").to_time
+    computer_time_fake = DateTime.parse("2022-05-06 13:49:07.640458578 +0100").to_time
 
-    time_now_fake = DateTime.parse("2022-05-06 13:49:07.640458578 +0100").to_time
     time_dbl = double :time
     expect(time_dbl).to receive(:now)
-      .and_return(time_now_fake)
+      .and_return(computer_time_fake)
 
     time = TimeError.new(requester_dbl, time_dbl)
-    time_error = DateTime.parse("2022-05-06T12:28:17.903776+00:00").to_time - time_now_fake
-    expect(time.error).to eq time_error
+    expect(time.error).to eq server_time_fake - computer_time_fake
   end
 end
